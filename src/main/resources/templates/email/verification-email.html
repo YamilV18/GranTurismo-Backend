@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificación de Cuenta - Gran Turismo</title>
+  <style>
+    /* Estos estilos generales suelen ser mejor soportados */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f7f6;
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: none;
+      word-break: break-word;
+    }
+    .container {
+      background-color: #ffffff;
+      max-width: 600px;
+      margin: 30px auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+    .header {
+      background-color: #1a3a5e; /* Deep Navy Blue */
+      padding: 25px 20px;
+      color: white;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-logo {
+      width: 50px; /* Adjust logo size as needed */
+      height: auto;
+      margin-bottom: 5px;
+    }
+    .content {
+      padding: 30px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .content h2 {
+      color: #1a3a5e; /* Deep Navy Blue for headings */
+      margin-top: 0;
+    }
+    .content p {
+      margin: 15px 0;
+    }
+    .btn-container {
+      text-align: center;
+      margin: 30px 0;
+    }
+    /* Eliminamos la mayoría de los estilos del botón de aquí */
+    /* El estilo :hover NO funcionará en línea */
+    /* .btn:hover { background-color: #004085; } */
+
+    .footer {
+      font-size: 11px;
+      color: #999;
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <img src="YOUR_LOGO_URL_HERE" alt="Gran Turismo Logo" class="header-logo">
+    Verificación de Cuenta
+  </div>
+  <div class="content">
+    <p>¡Hola <strong>{{email}}</strong>!</p>
+    <p>Gracias por registrarte en Gran Turismo. Para activar tu cuenta y comenzar a planificar tus viajes, haz clic en el botón de abajo:</p>
+    <div class="btn-container">
+      <a href="{{verificationLink}}" style="display: inline-block; background-color: #0056b3; color: #ffffff; padding: 14px 28px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 16px; border: none;">Verificar Cuenta</a>
+    </div>
+    <p>Este enlace es válido por <strong>24 horas</strong>. Si no solicitaste este registro, por favor ignora este correo.</p>
+  </div>
+  <div class="footer">
+    &copy; 2025 Gran Turismo. Todos los derechos reservados.<br>
+    contacto@granturismo.com
+  </div>
+</div>
+</body>
+</html>
