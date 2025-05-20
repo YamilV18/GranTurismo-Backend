@@ -41,6 +41,9 @@ public class Actividad {
     @Column(name = "imagen_url", nullable = false)
     private String imagenUrl ;
 
+    @Column(name = "imagen_public_id")
+    private String imagenPublicId;
+
     @Column(name = "precio_base", nullable = false)
     private BigDecimal precioBase ;
 

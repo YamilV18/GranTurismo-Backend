@@ -23,6 +23,7 @@ public class DestinoDTO {
     private String descripcion;
     private String ubicacion;
     private String imagenUrl;
+    private String imagenPublicId;
     private Double latitud;
     private Double longitud;
     private Integer popularidad;
@@ -36,9 +37,9 @@ public class DestinoDTO {
             String nombre,
             String descripcion,
             String ubicacion,
-            String imagenUrl,
-            String latitud,
-            String longitud,
+            //String imagenUrl,
+            Double latitud,
+            Double longitud,
             Integer popularidad,
             BigDecimal preciomedio,
             Float rating

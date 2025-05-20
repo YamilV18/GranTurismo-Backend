@@ -28,6 +28,8 @@ public class PaqueteDTO {
 
     private String imagenUrl;
 
+    private String imagenPublicId;
+
     @NotNull(message = "El precio no puede ser nulo")
     @DecimalMin(value = "0.0", inclusive = true, message = "El precio debe ser mayor o igual a 0")
     private BigDecimal precioTotal;
@@ -66,7 +68,7 @@ public class PaqueteDTO {
             String titulo,
             @NotNull(message = "La Descripción no puede ser nula")
             String descripcion,
-            String imagenUrl,
+            //String imagenUrl,
             @NotNull(message = "El Precio no puede ser nulo")
             BigDecimal precioTotal,
             @NotNull

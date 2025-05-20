@@ -17,6 +17,7 @@ public class ActividadDTO {
     private String tipo;
     private Integer duracionHoras;
     private String imagenUrl;
+    private String imagenPublicId;
     private BigDecimal precioBase;
 
 
@@ -26,7 +27,7 @@ public class ActividadDTO {
             String descripcion,
             String tipo,
             Integer duracionHoras,
-            String imagenUrl,
+            //String imagenUrl,
             BigDecimal precioBase
     ){}
 

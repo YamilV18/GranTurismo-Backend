@@ -36,6 +36,9 @@ public class Destino {
     @Column(name = "imagen_url")
     private String imagenUrl ;
 
+    @Column(name = "imagen_public_id")
+    private String imagenPublicId;
+
     @Column(name = "latitud")
     private Double latitud ;
 

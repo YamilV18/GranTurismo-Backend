@@ -32,8 +32,11 @@ public class Paquete {
     @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(name = "imagen_url", nullable = false)
+    @Column(name = "imagen_url")
     private String imagenUrl;
+
+    @Column(name = "imagen_public_id")
+    private String imagenPublicId;
 
     @Column(name = "precio_total", nullable = false)
     private BigDecimal precioTotal;

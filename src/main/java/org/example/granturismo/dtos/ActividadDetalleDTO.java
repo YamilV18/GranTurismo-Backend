@@ -16,6 +16,7 @@ public class ActividadDetalleDTO {
     private String titulo;
     private String descripcion;
     private String imagenUrl;
+    private String imagenPublicId;
     private Integer orden;
     private PaqueteDTO paquete;
     private ActividadDTO actividad;
@@ -25,7 +26,7 @@ public class ActividadDetalleDTO {
             Long idActividadDetalle,
             String titulo,
             String descripcion,
-            String imagenUrl,
+            //String imagenUrl,
             Integer orden,
             Long paquete,
             Long actividad

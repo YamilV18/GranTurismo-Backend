@@ -28,8 +28,11 @@ public class ActividadDetalle {
     @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
     private String descripcion ;
 
-    @Column(name = "imagen_url", nullable = false)
+    @Column(name = "imagen_url")
     private String imagenUrl ;
+
+    @Column(name = "imagen_public_id")
+    private String imagenPublicId;
 
     @Column(name = "orden", nullable = false)
     private Integer orden ;
