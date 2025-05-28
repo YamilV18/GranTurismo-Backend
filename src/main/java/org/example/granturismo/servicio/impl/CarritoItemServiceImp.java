@@ -2,9 +2,7 @@ package org.example.granturismo.servicio.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.example.granturismo.dtos.CarritoDTO;
 import org.example.granturismo.dtos.CarritoItemDTO;
-import org.example.granturismo.dtos.ReservaDTO;
 import org.example.granturismo.mappers.CarritoItemMapper;
 import org.example.granturismo.modelo.*;
 import org.example.granturismo.repositorio.*;
@@ -59,9 +57,12 @@ public class CarritoItemServiceImp extends CrudGenericoServiceImp<CarritoItem, L
     }
 
     @Override
-    public CarritoItemDTO updateD(CarritoItemDTO.CarritoItemCADTO dto, Long id) { // Changed input and return DTOs
-        CarritoItem carritoItemExistente = repo.findById(id) // Get the existing CarritoItem
-                .orElseThrow(() -> new EntityNotFoundException("CarritoItem no encontrado"));
+    public CarritoItemDTO updateD(CarritoItemDTO.CarritoItemCADTO dto, Long id) {
+        CarritoItem carritoItem = repo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+
+        CarritoItem carritoitemx = carritoItemMapper.toEntityFromCADTO(dto);
+        carritoitemx.setIdCarritoItem(carritoItem.getIdCarritoItem());
 
         Carrito carrito = carritoRepository.findById(dto.carrito())
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
@@ -71,14 +72,12 @@ public class CarritoItemServiceImp extends CrudGenericoServiceImp<CarritoItem, L
                 .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
 
 
-        carritoItemExistente.setCarrito(carrito);
-        carritoItemExistente.setServicio(servicio);
-        carritoItemExistente.setActividad(actividad);
+        carritoitemx.setCarrito(carrito);
+        carritoitemx.setServicio(servicio);
+        carritoitemx.setActividad(actividad);
 
-
-        // Save the updated existing entity
-        CarritoItem carritoItemActualizado = repo.save(carritoItemExistente);
-        return carritoItemMapper.toDTO(carritoItemActualizado); // Map the updated CarritoItem to CarritoItemDTO
+        CarritoItem carritoitemActualizado = repo.save(carritoitemx);
+        return carritoItemMapper.toDTO(carritoitemActualizado);
     }
 
     public Page<CarritoItem> listaPage(Pageable pageable){
