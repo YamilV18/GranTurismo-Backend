@@ -10,7 +10,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface CarritoItemMapper extends GenericMapper<CarritoItemDTO, CarritoItem> {
 
-    @Mapping(target = "usuario", ignore = true)
+    @Mapping(target = "carrito", ignore = true)
+    @Mapping(target = "actividad", ignore = true)
+    @Mapping(target = "servicio", ignore = true)
 
     CarritoItem toEntityFromCADTO(CarritoItemDTO.CarritoItemCADTO carritoitemCrearDTO);
 }

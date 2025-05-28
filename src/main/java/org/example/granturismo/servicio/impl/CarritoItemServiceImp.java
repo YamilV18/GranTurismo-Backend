@@ -43,14 +43,16 @@ public class CarritoItemServiceImp extends CrudGenericoServiceImp<CarritoItem, L
 
         Carrito carrito = carritoRepository.findById(dto.carrito())
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
-        Actividad actividad = actividadRepository.findById(dto.actividad())
-                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
         Servicio servicio = servicioRepository.findById(dto.servicio())
                 .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado"));
+        Actividad actividad = actividadRepository.findById(dto.actividad())
+                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
+
 
         carritoitem.setCarrito(carrito);
-        carritoitem.setActividad(actividad);
         carritoitem.setServicio(servicio);
+        carritoitem.setActividad(actividad);
+
 
         CarritoItem carritoitemGuardado = repo.save(carritoitem); // Corrected type
         return carritoItemMapper.toDTO(carritoitemGuardado); // Should map CarritoItem to CarritoItemDTO
@@ -63,14 +65,16 @@ public class CarritoItemServiceImp extends CrudGenericoServiceImp<CarritoItem, L
 
         Carrito carrito = carritoRepository.findById(dto.carrito())
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
-        Actividad actividad = actividadRepository.findById(dto.actividad())
-                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
         Servicio servicio = servicioRepository.findById(dto.servicio())
                 .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado"));
+        Actividad actividad = actividadRepository.findById(dto.actividad())
+                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
+
 
         carritoItemExistente.setCarrito(carrito);
-        carritoItemExistente.setActividad(actividad);
         carritoItemExistente.setServicio(servicio);
+        carritoItemExistente.setActividad(actividad);
+
 
         // Save the updated existing entity
         CarritoItem carritoItemActualizado = repo.save(carritoItemExistente);

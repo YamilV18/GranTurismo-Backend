@@ -35,17 +35,17 @@ public class CarritoItem {
 
     @ManyToOne
     @JoinColumn(name = "id_carrito", referencedColumnName = "id_carrito",
-            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITO"))
+            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITOITEM_CARRITO"))
     private Carrito carrito;
 
     @ManyToOne
     @JoinColumn(name = "id_servicio", referencedColumnName = "id_servicio",
-            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITO"))
+            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITOITEM_SERVICIO"))
     private Servicio servicio;
 
     @ManyToOne
     @JoinColumn(name = "id_actividad", referencedColumnName = "id_actividad",
-            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITO"))
+            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITOITEM_ACTIVIDAD"))
     private Actividad actividad;
 
 
