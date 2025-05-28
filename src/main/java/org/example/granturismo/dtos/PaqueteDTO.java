@@ -34,6 +34,9 @@ public class PaqueteDTO {
     @DecimalMin(value = "0.0", inclusive = true, message = "El precio debe ser mayor o igual a 0")
     private BigDecimal precioTotal;
 
+    //private BigDecimal precioconvertido;
+    //private String    moneda;
+
     @NotNull(message = "El Estado no puede ser nulo")
     private Paquete.Estado estado;
 
