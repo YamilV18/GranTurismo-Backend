@@ -65,6 +65,14 @@ public class Paquete {
     @Column(name = "fecha_fin", nullable = false)
     private LocalDateTime fechaFin;
 
+    @Column(name = "moneda_original", length = 3)
+    @Builder.Default
+    private String monedaOriginal = "PEN";
+
+    @Column(name = "idioma_original", length = 5)
+    @Builder.Default
+    private String idiomaOriginal = "es";
+
     @ManyToOne
     @JoinColumn(name = "id_proveedor", referencedColumnName = "id_proveedor",
             nullable = false, foreignKey = @ForeignKey(name = "FK_PAQUETE_PROVEEDOR"))

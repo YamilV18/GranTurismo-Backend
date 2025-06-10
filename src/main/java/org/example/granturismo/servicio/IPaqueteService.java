@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 public interface IPaqueteService extends ICrudGenericoService<Paquete, Long> {
@@ -21,4 +22,32 @@ public interface IPaqueteService extends ICrudGenericoService<Paquete, Long> {
     Paquete findById(Long id);
     List<Paquete> findAll();
     void delete(Long id);
+
+    // NUEVOS MÉTODOS CON LOCALIZACIÓN
+
+    /**
+     * Obtiene un paquete por ID, localizado según las preferencias del usuario
+     */
+    PaqueteDTO getPaqueteLocalizado(Long id, Long userId);
+
+    /**
+     * Obtiene una lista paginada de paquetes localizados
+     */
+    Page<PaqueteDTO.PaqueteListDTO> getPaquetesLocalizados(Long userId, Pageable pageable);
+
+    /**
+     * Busca paquetes por estado, localizados
+     */
+    List<PaqueteDTO.PaqueteListDTO> buscarPorEstadoLocalizado(Paquete.Estado estado, Long userId);
+
+    /**
+     * Obtiene un paquete sin localización (para administradores)
+     */
+    PaqueteDTO getPaqueteOriginal(Long id);
+
+    /**
+     * Obtiene estadísticas de localización para un paquete
+     */
+    Map<String, Object> getEstadisticasLocalizacion(Long id, Long userId);
+
 }

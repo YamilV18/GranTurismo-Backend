@@ -63,6 +63,17 @@ public class PaqueteDTO {
     @NotNull(message = "El Destino no puede ser nulo")
     private DestinoDTO destino;
 
+    // CAMPOS DE LOCALIZACIÓN ORIGINALES
+    private String monedaOriginal;
+    private String idiomaOriginal;
+
+    // CAMPOS DE LOCALIZACIÓN APLICADA (metadatos)
+    private String monedaAplicada;
+    private String idiomaAplicado;
+    private Boolean fueTraducido;
+    private Boolean fueConvertido;
+    private Double tasaCambio;
+
 
     public record PaqueteCADTO(
             Long idPaquete,
@@ -91,7 +102,40 @@ public class PaqueteDTO {
             @NotNull(message = "El Proveedor no puede ser nulo")
             Long proveedor,
             @NotNull(message = "El Destino no puede ser nulo")
-            Long destino
+            Long destino,
+
+            String monedaOriginal,
+            String idiomaOriginal
 
     ){}
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PaqueteListDTO {
+        private Long idPaquete;
+        private String titulo;
+        private String descripcion;
+        private String imagenUrl;
+        private BigDecimal precioTotal;
+        private Paquete.Estado estado;
+        private Integer duracionDias;
+        private String localidad;
+        private String tipoActividad;
+        private Integer cuposMaximos;
+        private LocalDateTime fechaInicio;
+        private LocalDateTime fechaFin;
+
+        // Información básica de relaciones
+        private String proveedorNombre;
+        private String destinoNombre;
+
+        // Metadatos de localización
+        private String monedaOriginal;
+        private String idiomaOriginal;
+        private String monedaAplicada;
+        private String idiomaAplicado;
+        private Boolean fueTraducido;
+        private Boolean fueConvertido;
+        private Double tasaCambio;
+    }
 }
