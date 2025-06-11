@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.granturismo.dtos.PreferenceResponseDto;
 import org.example.granturismo.dtos.PreferenceUpdateDto;
+import org.example.granturismo.security.JwtTokenUtil;
 import org.example.granturismo.servicio.impl.PreferenceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,58 @@ import java.util.Map;
 public class PreferenceController {
 
     private final PreferenceService preferenceService;
+    private final JwtTokenUtil jwtTokenUtil; // Inject JwtTokenUtil
+
+
+    /**
+     * Extrae el ID del usuario del token JWT
+     * Nota: Implementar según tu configuración de JWT
+     */
+    private Long getUserIdFromToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Usuario no autenticado"); // This would typically be handled by Spring Security for 401
+        }
+
+        // Get the JWT token from the request header (assuming it's passed as Bearer token)
+        // This part needs to be handled by your JwtRequestFilter, which should store the token somewhere
+        // or you need to re-extract it from the request if not already done.
+        // The most robust way is to put the userId into CustomUserDetails during authentication.
+
+        // --- OPTION 1: Best Practice - Get userId from CustomUserDetails if set as principal ---
+        // Assuming your JwtRequestFilter sets a CustomUserDetails object as the principal.
+        if (authentication.getPrincipal() instanceof org.example.granturismo.security.CustomUserDetails customUserDetails) {
+            log.debug("Found CustomUserDetails in authentication principal. User ID: {}", customUserDetails.getIdUsuario());
+            return customUserDetails.getIdUsuario();
+        } else {
+            // --- OPTION 2: If CustomUserDetails is not directly the principal, extract from token directly (less ideal) ---
+            // This option requires you to somehow retrieve the raw JWT token from the request.
+            // A more common approach is for JwtRequestFilter to already populate the Authentication object
+            // with necessary user details (like the ID).
+
+            // If the principal is the username (email) and the token is not readily available here,
+            // then you need to redesign how the userId is passed to the controller.
+            // However, since you have JwtTokenUtil, you could try to get it if the token is accessible.
+            // This is generally not done in the controller, but rather by making the userId available
+            // through the Authentication object itself or via a custom argument resolver.
+
+            // For now, let's assume getUserIdFromToken() in JwtTokenUtil directly gives you the ID
+            // if you passed the raw token to it. But the controller doesn't have the raw token.
+            // Therefore, the safest way is through CustomUserDetails as in OPTION 1.
+
+            // Fallback for debugging, but not recommended for production
+            log.warn("Authentication principal is not CustomUserDetails. Trying to parse name (which is likely email). This will fail if name is not ID.");
+            try {
+                // If you *insist* on parsing authentication.getName(), ensure your JwtRequestFilter
+                // sets authentication.getName() to the userId as a string. This is usually bad practice.
+                return Long.parseLong(authentication.getName());
+            } catch (NumberFormatException e) {
+                log.error("Failed to parse user ID from authentication.getName(): {}. Original exception: {}", authentication.getName(), e.getMessage());
+                throw new RuntimeException("No se pudo extraer el ID del usuario del token. El nombre del principal no es un ID numérico.", e);
+            }
+        }
+    }
 
     @Operation(summary = "Obtener preferencias del usuario autenticado")
     @ApiResponses({
@@ -217,33 +270,7 @@ public class PreferenceController {
 
     // Métodos de utilidad
 
-    /**
-     * Extrae el ID del usuario del token JWT
-     * Nota: Implementar según tu configuración de JWT
-     */
-    private Long getUserIdFromToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Usuario no autenticado");
-        }
-
-        // Opción 1: Si guardas el ID como principal
-        try {
-            return Long.parseLong(authentication.getName());
-        } catch (NumberFormatException e) {
-            // Opción 2: Si guardas el email como principal, necesitarás buscar el usuario
-            // UserService userService; // Inyectar si es necesario
-            // return userService.findByEmail(authentication.getName()).getIdUsuario();
-
-            // Opción 3: Si usas un objeto UserDetails personalizado
-            // if (authentication.getPrincipal() instanceof CustomUserDetails) {
-            //     return ((CustomUserDetails) authentication.getPrincipal()).getUserId();
-            // }
-
-            throw new RuntimeException("No se pudo extraer el ID del usuario del token");
-        }
-    }
 
     // Endpoints de utilidad para el frontend
 

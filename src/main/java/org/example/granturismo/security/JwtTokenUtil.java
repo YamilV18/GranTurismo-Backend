@@ -3,6 +3,8 @@ package org.example.granturismo.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger; // Importar Logger
+import org.slf4j.LoggerFactory; // Importar LoggerFactory
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,17 +21,24 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    private final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000; //5 horas
-    //private final long JWT_TOKEN_VALIDITY = 6000; //6 segundos
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class); // Inicializar Logger
 
-    @Value("${jwt.secret}") //Expression Language ${}
+    private final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000; // 5 horas
+
+    @Value("${jwt.secret}")
     private String secret;
 
-    //Agregando data al Payload
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","))); //ADMIN,PROV,USER
+        claims.put("roles", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
         claims.put("test", "syscenterlife-value-test");
+
+        // Añadir el ID del usuario a los claims si es una instancia de CustomUserDetails
+        if (userDetails instanceof CustomUserDetails customUserDetails) {
+            claims.put("userId", customUserDetails.getIdUsuario()); // <-- Aquí se añade el ID
+        } else {
+            logger.warn("UserDetails no es una instancia de CustomUserDetails para el usuario '{}'. El claim 'userId' no se añadirá al token.", userDetails.getUsername());
+        }
 
         return doGenerateToken(claims, userDetails.getUsername());
     }
@@ -39,17 +48,16 @@ public class JwtTokenUtil implements Serializable {
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(username)
+                .subject(username) // El subject sigue siendo el username (email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
                 .signWith(key)
                 .compact();
     }
 
-    //utils
+    // utils
     public Claims getAllClaimsFromToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(this.secret.getBytes());
-
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
@@ -60,6 +68,12 @@ public class JwtTokenUtil implements Serializable {
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    // Nuevo método para obtener el ID del usuario desde el token
+    public Long getUserIdFromToken(String token) {
+        // Asume que el claim 'userId' es de tipo Long
+        return getClaimFromToken(token, claims -> claims.get("userId", Long.class));
     }
 
     public Date getExpirationDateFromToken(String token){

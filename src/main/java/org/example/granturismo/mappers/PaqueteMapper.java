@@ -4,6 +4,7 @@ import org.example.granturismo.dtos.PaqueteDTO;
 import org.example.granturismo.modelo.Paquete;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.InheritInverseConfiguration; // No longer strictly needed for this file, but fine to keep if used elsewhere
 
 import java.util.List;
 
@@ -12,18 +13,17 @@ public interface PaqueteMapper extends GenericMapper<PaqueteDTO, Paquete> {
 
     // Mapeo completo para DTO principal
     @Override
-    @Mapping(target = "monedaAplicada", ignore = true)
-    @Mapping(target = "idiomaAplicado", ignore = true)
-    @Mapping(target = "fueTraducido", ignore = true)
-    @Mapping(target = "fueConvertido", ignore = true)
-    @Mapping(target = "tasaCambio", ignore = true)
-    // Asegurarse de que imagenPublicId también se mapee en toDTO
+    // REMOVE all these ignore mappings for localization metadata
+    // @Mapping(target = "monedaAplicada", ignore = true)
+    // @Mapping(target = "idiomaAplicado", ignore = true)
+    // @Mapping(target = "fueTraducido", ignore = true)
+    // @Mapping(target = "fueConvertido", ignore = true)
+    // @Mapping(target = "tasaCambio", ignore = true)
     PaqueteDTO toDTO(Paquete entity);
 
     @Override
     @Mapping(target = "detalles", ignore = true)
     @Mapping(target = "actividadDetalles", ignore = true)
-        // Asegurarse de que imagenPublicId también se mapee en toEntity
     Paquete toEntity(PaqueteDTO dto);
 
     // Mapeo desde DTO de creación/actualización
@@ -37,42 +37,21 @@ public interface PaqueteMapper extends GenericMapper<PaqueteDTO, Paquete> {
     @Mapping(target = "idiomaOriginal", source = "idiomaOriginal", defaultValue = "es")
     Paquete toEntityFromCADTO(PaqueteDTO.PaqueteCADTO paqueteCrearDTO);
 
-
     // Mapeo para DTO de lista
     @Mapping(target = "proveedorNombre", source = "proveedor.nombreCompleto")
     @Mapping(target = "destinoNombre", source = "destino.nombre")
-    @Mapping(target = "monedaAplicada", ignore = true)
-    @Mapping(target = "idiomaAplicado", ignore = true)
-    @Mapping(target = "fueTraducido", ignore = true)
-    @Mapping(target = "fueConvertido", ignore = true)
-    @Mapping(target = "tasaCambio", ignore = true)
+    // REMOVE all these ignore mappings for localization metadata
+    // @Mapping(target = "monedaAplicada", ignore = true)
+    // @Mapping(target = "idiomaAplicado", ignore = true)
+    // @Mapping(target = "fueTraducido", ignore = true)
+    // @Mapping(target = "fueConvertido", ignore = true)
+    // @Mapping(target = "tasaCambio", ignore = true)
     PaqueteDTO.PaqueteListDTO toListDTO(Paquete entity);
 
     // Mapeo de lista de entidades a DTOs de lista
     List<PaqueteDTO.PaqueteListDTO> toListDTOs(List<Paquete> entities);
 
-    // Método de utilidad para crear DTO localizado
-    default PaqueteDTO createLocalizedDTO(Paquete entity, String monedaAplicada, String idiomaAplicado,
-                                          Boolean fueTraducido, Boolean fueConvertido, Double tasaCambio) {
-        PaqueteDTO dto = toDTO(entity);
-        dto.setMonedaAplicada(monedaAplicada);
-        dto.setIdiomaAplicado(idiomaAplicado);
-        dto.setFueTraducido(fueTraducido);
-        dto.setFueConvertido(fueConvertido);
-        dto.setTasaCambio(tasaCambio);
-        return dto;
-    }
-
-    // Método de utilidad para crear DTO de lista localizado
-    default PaqueteDTO.PaqueteListDTO createLocalizedListDTO(Paquete entity, String monedaAplicada, String idiomaAplicado,
-                                                             Boolean fueTraducido, Boolean fueConvertido, Double tasaCambio) {
-        PaqueteDTO.PaqueteListDTO dto = toListDTO(entity);
-        dto.setMonedaAplicada(monedaAplicada);
-        dto.setIdiomaAplicado(idiomaAplicado);
-        dto.setFueTraducido(fueTraducido);
-        dto.setFueConvertido(fueConvertido);
-        dto.setTasaCambio(tasaCambio);
-        return dto;
-    }
-
+    // REMOVE these utility methods, their logic is now handled by LocalizedResponseDto and LocalizationService
+    // default PaqueteDTO createLocalizedDTO(...) { ... }
+    // default PaqueteDTO.PaqueteListDTO createLocalizedListDTO(...) { ... }
 }

@@ -1,5 +1,6 @@
 package org.example.granturismo.servicio;
 
+import org.example.granturismo.dtos.LocalizedResponseDto;
 import org.example.granturismo.dtos.PaqueteDTO;
 import org.example.granturismo.modelo.Paquete;
 import org.springframework.data.domain.Page;
@@ -28,17 +29,17 @@ public interface IPaqueteService extends ICrudGenericoService<Paquete, Long> {
     /**
      * Obtiene un paquete por ID, localizado según las preferencias del usuario
      */
-    PaqueteDTO getPaqueteLocalizado(Long id, Long userId);
+    LocalizedResponseDto<PaqueteDTO> getPaqueteLocalizado(Long id, Long userId);
 
     /**
      * Obtiene una lista paginada de paquetes localizados
      */
-    Page<PaqueteDTO.PaqueteListDTO> getPaquetesLocalizados(Long userId, Pageable pageable);
+    Page<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>> getPaquetesLocalizados(Long userId, Pageable pageable);
 
     /**
      * Busca paquetes por estado, localizados
      */
-    List<PaqueteDTO.PaqueteListDTO> buscarPorEstadoLocalizado(Paquete.Estado estado, Long userId);
+    List<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>> buscarPorEstadoLocalizado(Paquete.Estado estado, Long userId); // <--- This line is the key
 
     /**
      * Obtiene un paquete sin localización (para administradores)
@@ -49,5 +50,7 @@ public interface IPaqueteService extends ICrudGenericoService<Paquete, Long> {
      * Obtiene estadísticas de localización para un paquete
      */
     Map<String, Object> getEstadisticasLocalizacion(Long id, Long userId);
+
+
 
 }

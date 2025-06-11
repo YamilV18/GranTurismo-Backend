@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+// REMOVE "extends PaqueteDTO" here
 public class LocalizedResponseDto<T> {
-    private T data;
+    private T data; // This will hold your PaqueteDTO or PaqueteListDTO
     private String appliedLanguage;
     private String appliedCurrency;
     private boolean wasTranslated;
     private boolean wasCurrencyConverted;
+    private Double exchangeRate;
 }

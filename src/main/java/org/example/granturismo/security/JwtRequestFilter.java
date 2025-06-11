@@ -107,4 +107,5 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         response.setContentType("text/plain;charset=" + StandardCharsets.UTF_8.name());
         response.getWriter().write(message);
     }
+
 }

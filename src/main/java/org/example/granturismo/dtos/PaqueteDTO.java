@@ -68,11 +68,11 @@ public class PaqueteDTO {
     private String idiomaOriginal;
 
     // CAMPOS DE LOCALIZACIÓN APLICADA (metadatos)
-    private String monedaAplicada;
-    private String idiomaAplicado;
-    private Boolean fueTraducido;
-    private Boolean fueConvertido;
-    private Double tasaCambio;
+    //private String monedaAplicada;
+    //private String idiomaAplicado;
+    //private Boolean fueTraducido;
+    //private Boolean fueConvertido;
+    //private Double tasaCambio;
 
 
     public record PaqueteCADTO(
@@ -132,10 +132,10 @@ public class PaqueteDTO {
         // Metadatos de localización
         private String monedaOriginal;
         private String idiomaOriginal;
-        private String monedaAplicada;
-        private String idiomaAplicado;
-        private Boolean fueTraducido;
-        private Boolean fueConvertido;
-        private Double tasaCambio;
+        //private String monedaAplicada;
+        //private String idiomaAplicado;
+        //private Boolean fueTraducido;
+        //private Boolean fueConvertido;
+        //private Double tasaCambio;
     }
 }

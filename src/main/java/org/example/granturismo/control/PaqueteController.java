@@ -9,9 +9,11 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.granturismo.dtos.LocalizedResponseDto; // Import this
 import org.example.granturismo.dtos.PaqueteDTO;
 import org.example.granturismo.mappers.PaqueteMapper;
 import org.example.granturismo.modelo.Paquete;
+import org.example.granturismo.security.CustomUserDetails;
 import org.example.granturismo.security.PermitRoles;
 import org.example.granturismo.servicio.impl.PaqueteServiceImp;
 import org.springframework.data.domain.Page;
@@ -39,9 +41,10 @@ import java.util.Map;
 public class PaqueteController {
 
     private final PaqueteServiceImp paqueteService;
-    private final PaqueteMapper paqueteMapper;
+    private final PaqueteMapper paqueteMapper; // Keep this for admin/original endpoints
 
     // ENDPOINTS ORIGINALES (SIN LOCALIZACIÓN) - Para compatibilidad
+    // These methods remain unchanged as they are intended to return original data.
 
     @GetMapping("/admin/all")
     @PermitRoles({"ADMIN"})
@@ -144,14 +147,15 @@ public class PaqueteController {
             @ApiResponse(responseCode = "404", description = "Paquete no encontrado"),
             @ApiResponse(responseCode = "401", description = "Usuario no autenticado")
     })
-    public ResponseEntity<PaqueteDTO> obtenerPaqueteLocalizado(
-            @Parameter(description = "ID del paquete", example = "1")
-            @PathVariable Long id) {
+    public ResponseEntity<LocalizedResponseDto<PaqueteDTO>> obtenerPaqueteLocalizado( // <-- Changed return type
+                                                                                      @Parameter(description = "ID del paquete", example = "1")
+                                                                                      @PathVariable Long id) {
         Long userId = getUserIdFromToken();
         log.info("Obteniendo paquete {} localizado para usuario {}", id, userId);
 
-        PaqueteDTO paquete = paqueteService.getPaqueteLocalizado(id, userId);
-        return ResponseEntity.ok(paquete);
+        // Now the service returns LocalizedResponseDto<PaqueteDTO>
+        LocalizedResponseDto<PaqueteDTO> localizedResponse = paqueteService.getPaqueteLocalizado(id, userId);
+        return ResponseEntity.ok(localizedResponse); // <-- Return the entire LocalizedResponseDto
     }
 
     @GetMapping
@@ -161,15 +165,15 @@ public class PaqueteController {
             @ApiResponse(responseCode = "200", description = "Lista de paquetes obtenida exitosamente"),
             @ApiResponse(responseCode = "401", description = "Usuario no autenticado")
     })
-    public ResponseEntity<Page<PaqueteDTO.PaqueteListDTO>> listarPaquetesLocalizados(
-            @Parameter(description = "Número de página (0-indexed)", example = "0")
-            @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Tamaño de página", example = "10")
-            @RequestParam(defaultValue = "10") int size,
-            @Parameter(description = "Campo de ordenamiento", example = "titulo")
-            @RequestParam(defaultValue = "titulo") String sortBy,
-            @Parameter(description = "Dirección de ordenamiento", example = "ASC")
-            @RequestParam(defaultValue = "ASC") String sortDir) {
+    public ResponseEntity<Page<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>>> listarPaquetesLocalizados( // <-- Changed return type
+                                                                                                            @Parameter(description = "Número de página (0-indexed)", example = "0")
+                                                                                                            @RequestParam(defaultValue = "0") int page,
+                                                                                                            @Parameter(description = "Tamaño de página", example = "10")
+                                                                                                            @RequestParam(defaultValue = "10") int size,
+                                                                                                            @Parameter(description = "Campo de ordenamiento", example = "titulo")
+                                                                                                            @RequestParam(defaultValue = "titulo") String sortBy,
+                                                                                                            @Parameter(description = "Dirección de ordenamiento", example = "ASC")
+                                                                                                            @RequestParam(defaultValue = "ASC") String sortDir) {
 
         Long userId = getUserIdFromToken();
         log.info("Listando paquetes localizados para usuario {} - página: {}, tamaño: {}", userId, page, size);
@@ -177,8 +181,9 @@ public class PaqueteController {
         Sort.Direction direction = sortDir.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-        Page<PaqueteDTO.PaqueteListDTO> paquetes = paqueteService.getPaquetesLocalizados(userId, pageable);
-        return ResponseEntity.ok(paquetes);
+        // Now the service returns Page<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>>
+        Page<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>> paquetes = paqueteService.getPaquetesLocalizados(userId, pageable);
+        return ResponseEntity.ok(paquetes); // <-- Return the entire Page
     }
 
     @GetMapping("/estado/{estado}")
@@ -188,26 +193,27 @@ public class PaqueteController {
             @ApiResponse(responseCode = "200", description = "Paquetes encontrados exitosamente"),
             @ApiResponse(responseCode = "401", description = "Usuario no autenticado")
     })
-    public ResponseEntity<List<PaqueteDTO.PaqueteListDTO>> buscarPorEstado(
-            @Parameter(description = "Estado del paquete", example = "DISPONIBLE")
-            @PathVariable Paquete.Estado estado) {
+    public ResponseEntity<List<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>>> buscarPorEstado( // <-- Changed return type
+                                                                                                  @Parameter(description = "Estado del paquete", example = "DISPONIBLE")
+                                                                                                  @PathVariable Paquete.Estado estado) {
 
         Long userId = getUserIdFromToken();
         log.info("Buscando paquetes por estado '{}' para usuario {}", estado, userId);
 
-        List<PaqueteDTO.PaqueteListDTO> paquetes = paqueteService.buscarPorEstadoLocalizado(estado, userId);
-        return ResponseEntity.ok(paquetes);
+        // Now the service returns List<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>>
+        List<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>> paquetes = paqueteService.buscarPorEstadoLocalizado(estado, userId);
+        return ResponseEntity.ok(paquetes); // <-- Return the entire List
     }
 
     @GetMapping("/disponibles")
     @PermitRoles({"ADMIN", "USER", "PROV"})
     @Operation(summary = "Obtener solo paquetes disponibles localizados")
-    public ResponseEntity<List<PaqueteDTO.PaqueteListDTO>> obtenerPaquetesDisponibles() {
+    public ResponseEntity<List<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>>> obtenerPaquetesDisponibles() { // <-- Changed return type
         Long userId = getUserIdFromToken();
         log.info("Obteniendo paquetes disponibles para usuario {}", userId);
 
-        List<PaqueteDTO.PaqueteListDTO> paquetes = paqueteService.buscarPorEstadoLocalizado(Paquete.Estado.DISPONIBLE, userId);
-        return ResponseEntity.ok(paquetes);
+        List<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>> paquetes = paqueteService.buscarPorEstadoLocalizado(Paquete.Estado.DISPONIBLE, userId);
+        return ResponseEntity.ok(paquetes); // <-- Return the entire List
     }
 
     @GetMapping("/{id}/localizacion")
@@ -251,17 +257,18 @@ public class PaqueteController {
     @GetMapping("/pageable")
     @PermitRoles({"ADMIN", "USER", "PROV"})
     @Operation(summary = "Listar paquetes paginados localizados")
-    public ResponseEntity<Page<PaqueteDTO.PaqueteListDTO>> listPageLocalizado(
-            @Parameter(description = "Número de página", example = "0")
-            @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Tamaño de página", example = "10")
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>>> listPageLocalizado( // <-- Changed return type
+                                                                                                     @Parameter(description = "Número de página", example = "0")
+                                                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                                                     @Parameter(description = "Tamaño de página", example = "10")
+                                                                                                     @RequestParam(defaultValue = "10") int size) {
 
         Long userId = getUserIdFromToken();
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<PaqueteDTO.PaqueteListDTO> paquetesPage = paqueteService.getPaquetesLocalizados(userId, pageable);
-        return ResponseEntity.ok(paquetesPage);
+        // Now the service returns Page<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>>
+        Page<LocalizedResponseDto<PaqueteDTO.PaqueteListDTO>> paquetesPage = paqueteService.getPaquetesLocalizados(userId, pageable);
+        return ResponseEntity.ok(paquetesPage); // <-- Return the entire Page
     }
 
     // MÉTODO DE UTILIDAD PARA EXTRAER USER ID DEL TOKEN JWT
@@ -274,26 +281,16 @@ public class PaqueteController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Usuario no autenticado");
+            throw new org.springframework.security.access.AccessDeniedException("Usuario no autenticado.");
         }
 
-        try {
-            // Opción 1: Si guardas el ID como principal
-            return Long.parseLong(authentication.getName());
-        } catch (NumberFormatException e) {
-            // Opción 2: Si guardas el email como principal, necesitarás buscar el usuario
-            // TODO: Implementar según tu configuración de JWT específica
-            // Ejemplo:
-            // UserService userService; // Inyectar si es necesario
-            // return userService.findByEmail(authentication.getName()).getIdUsuario();
+        Object principal = authentication.getPrincipal();
 
-            // Opción 3: Si usas un objeto UserDetails personalizado
-            // if (authentication.getPrincipal() instanceof CustomUserDetails) {
-            //     return ((CustomUserDetails) authentication.getPrincipal()).getUserId();
-            // }
-
-            log.warn("No se pudo extraer el ID del usuario del token. Using default user ID 1 for testing");
-            return 1L; // Valor por defecto para testing - REMOVER EN PRODUCCIÓN
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails.getIdUsuario();
+        } else {
+            log.error("El objeto principal de autenticación no es CustomUserDetails para el usuario '{}'.", authentication.getName());
+            throw new IllegalStateException("No se pudo obtener el ID del usuario del contexto de seguridad.");
         }
     }
 }

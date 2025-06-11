@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors; // Importar Collectors
 
 @Service
 @RequiredArgsConstructor
@@ -24,19 +25,19 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario u=repoU.findOneByEmail(username).orElse(null);
-        List<UsuarioRol> user = repo.findOneByUsuarioUser(username);
+        // Busca el usuario por email
+        Usuario u = repoU.findOneByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
 
-        if (user == null) {
-            throw new UsernameNotFoundException("Username not found: " + username);
-        }
+        // Busca los roles del usuario
+        List<UsuarioRol> userRoles = repo.findByUsuario(u); // Asumiendo que IUsuarioRolRepository tiene un findByUsuario
 
-        List<GrantedAuthority> roles = new ArrayList<>();
-        user.forEach(rol -> {
-            roles.add(new SimpleGrantedAuthority(rol.getRol().getNombre().name()));
-        });
+        // Mapea los roles a GrantedAuthority
+        List<GrantedAuthority> roles = userRoles.stream()
+                .map(rol -> new SimpleGrantedAuthority(rol.getRol().getNombre().name()))
+                .collect(Collectors.toList());
 
-        return new org.springframework.security.core.userdetails.User(u.getEmail(), u.getClave(), roles);
+        // Retorna tu CustomUserDetails con el ID del usuario
+        return new CustomUserDetails(u.getIdUsuario(), u.getEmail(), u.getClave(), roles);
     }
-
 }
