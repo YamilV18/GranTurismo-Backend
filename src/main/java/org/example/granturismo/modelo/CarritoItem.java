@@ -21,8 +21,11 @@ public class CarritoItem {
     @Column(name = "id_carrito_item")
     private Long idCarritoItem ;
 
-    @Column(name = "tipo")
+    @Column(name = "tipo", nullable = false )
     private String tipo ;
+
+    @Column(name = "referencia_id", nullable = false)
+    private Long referenciaId;
 
     @Column(name = "cantidad_personas")
     private Integer cantidadPersonas ;
@@ -37,16 +40,5 @@ public class CarritoItem {
     @JoinColumn(name = "id_carrito", referencedColumnName = "id_carrito",
             nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITOITEM_CARRITO"))
     private Carrito carrito;
-
-    @ManyToOne
-    @JoinColumn(name = "id_servicio", referencedColumnName = "id_servicio",
-            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITOITEM_SERVICIO"))
-    private Servicio servicio;
-
-    @ManyToOne
-    @JoinColumn(name = "id_actividad", referencedColumnName = "id_actividad",
-            nullable = false, foreignKey = @ForeignKey(name = "FK_CARRITOITEM_ACTIVIDAD"))
-    private Actividad actividad;
-
 
 }

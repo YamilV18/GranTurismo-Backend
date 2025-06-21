@@ -16,23 +16,21 @@ import java.time.LocalDateTime;
 public class CarritoItemDTO {
     private Long idCarritoItem;
     private String tipo;
+    private Long referenciaId;
     private Integer cantidadPersonas;
     private LocalDateTime fechaReserva ;
     private String notas ;
     private CarritoDTO carrito;
-    private ServicioDTO servicio;
-    private ActividadDTO actividad;
 
 
     public record CarritoItemCADTO(
             Long idCarritoItem,
             String tipo,
+            Long referenciaId,
             Integer cantidadPersonas,
             LocalDateTime fechaReserva,
             String notas,
-            Long carrito,
-            Long servicio,
-            Long actividad
+            Long carrito
 
     ){}
 }

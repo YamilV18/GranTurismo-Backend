@@ -27,8 +27,6 @@ public class CarritoItemServiceImp extends CrudGenericoServiceImp<CarritoItem, L
     private final ICarritoItemRepository repo;
     private final CarritoItemMapper carritoItemMapper;
     private final ICarritoRepository carritoRepository;
-    private final IServicioRepository servicioRepository;
-    private final IActividadRepository actividadRepository;
 
     @Override
     protected ICrudGenericoRepository<CarritoItem, Long> getRepo() {
@@ -36,48 +34,32 @@ public class CarritoItemServiceImp extends CrudGenericoServiceImp<CarritoItem, L
     }
 
     @Override
-    public CarritoItemDTO saveD(CarritoItemDTO.CarritoItemCADTO dto) { // Changed input DTO
-        CarritoItem carritoitem = carritoItemMapper.toEntityFromCADTO(dto);
+    public CarritoItemDTO saveD(CarritoItemDTO.CarritoItemCADTO dto) {
+        CarritoItem carritoItem = carritoItemMapper.toEntityFromCADTO(dto);
 
         Carrito carrito = carritoRepository.findById(dto.carrito())
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
-        Servicio servicio = servicioRepository.findById(dto.servicio())
-                .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado"));
-        Actividad actividad = actividadRepository.findById(dto.actividad())
-                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
 
-
-        carritoitem.setCarrito(carrito);
-        carritoitem.setServicio(servicio);
-        carritoitem.setActividad(actividad);
-
-
-        CarritoItem carritoitemGuardado = repo.save(carritoitem); // Corrected type
-        return carritoItemMapper.toDTO(carritoitemGuardado); // Should map CarritoItem to CarritoItemDTO
+        carritoItem.setCarrito(carrito);
+        CarritoItem carritoItemGuardado = repo.save(carritoItem);
+        return carritoItemMapper.toDTO(carritoItemGuardado);
     }
 
     @Override
     public CarritoItemDTO updateD(CarritoItemDTO.CarritoItemCADTO dto, Long id) {
         CarritoItem carritoItem = repo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("CarritoItem no encontrado"));
 
-        CarritoItem carritoitemx = carritoItemMapper.toEntityFromCADTO(dto);
-        carritoitemx.setIdCarritoItem(carritoItem.getIdCarritoItem());
+        CarritoItem carritoItemx = carritoItemMapper.toEntityFromCADTO(dto);
+        carritoItemx.setIdCarritoItem(carritoItem.getIdCarritoItem());
 
         Carrito carrito = carritoRepository.findById(dto.carrito())
-                .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
-        Servicio servicio = servicioRepository.findById(dto.servicio())
-                .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado"));
-        Actividad actividad = actividadRepository.findById(dto.actividad())
-                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
+        carritoItemx.setCarrito(carrito);
 
-        carritoitemx.setCarrito(carrito);
-        carritoitemx.setServicio(servicio);
-        carritoitemx.setActividad(actividad);
-
-        CarritoItem carritoitemActualizado = repo.save(carritoitemx);
-        return carritoItemMapper.toDTO(carritoitemActualizado);
+        CarritoItem carritoItemActualizado = repo.save(carritoItemx);
+        return carritoItemMapper.toDTO(carritoItemActualizado);
     }
 
     public Page<CarritoItem> listaPage(Pageable pageable){
