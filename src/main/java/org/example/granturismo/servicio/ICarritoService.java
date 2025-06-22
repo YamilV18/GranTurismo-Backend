@@ -10,12 +10,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public interface ICarritoService extends ICrudGenericoService<Carrito, Long> {
 
     CarritoDTO saveD(CarritoDTO.CarritoCADTO dto);
 
     CarritoDTO updateD(CarritoDTO.CarritoCADTO dto, Long id);
+
+    Optional<Carrito> findByUsuario(Long usuarioId);
 
     Page<Carrito> listaPage(Pageable pageable);
 }

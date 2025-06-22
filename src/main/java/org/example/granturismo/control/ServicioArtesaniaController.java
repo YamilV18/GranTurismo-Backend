@@ -3,9 +3,11 @@ package org.example.granturismo.control;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.granturismo.dtos.ServicioAlimentacionDTO;
 import org.example.granturismo.dtos.ServicioArtesaniaDTO;
 import org.example.granturismo.dtos.ServicioHoteleriaDTO;
 import org.example.granturismo.mappers.ServicioArtesaniaMapper;
+import org.example.granturismo.modelo.ServicioAlimentacion;
 import org.example.granturismo.modelo.ServicioArtesania;
 import org.example.granturismo.modelo.ServicioHoteleria;
 import org.example.granturismo.security.PermitRoles;
@@ -42,6 +44,18 @@ public class ServicioArtesaniaController {
         return ResponseEntity.ok(servicioArtesaniaMapper.toDTO(obj));
     }
 
+    @GetMapping("/servicio/{id}")
+    @PermitRoles({"ADMIN", "USER", "PROV"})
+    public ResponseEntity<ServicioArtesaniaDTO> findByServicio(
+            @PathVariable("id") Long servicioId
+    ) {
+        ServicioArtesania art = servicioArtesaniaService.findByServicio(servicioId);
+        if (art == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ServicioArtesaniaDTO dto = servicioArtesaniaMapper.toDTO(art);
+        return ResponseEntity.ok(dto);
+    }
 
     @PostMapping
     @PermitRoles({"ADMIN"})

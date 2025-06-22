@@ -4,10 +4,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.granturismo.dtos.CarritoDTO;
 import org.example.granturismo.dtos.CarritoItemDTO;
+import org.example.granturismo.dtos.FavoritoDTO;
 import org.example.granturismo.mappers.CarritoItemMapper;
 import org.example.granturismo.mappers.CarritoMapper;
 import org.example.granturismo.modelo.Carrito;
 import org.example.granturismo.modelo.CarritoItem;
+import org.example.granturismo.modelo.Favorito;
 import org.example.granturismo.security.PermitRoles;
 import org.example.granturismo.servicio.ICarritoItemService;
 import org.example.granturismo.servicio.ICarritoService;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,6 +42,28 @@ public class CarritoItemController {
     public ResponseEntity<CarritoItemDTO> findById(@PathVariable("id") Long id) {
         CarritoItem obj = carritoItemService.findById(id);
         return ResponseEntity.ok(carritoItemMapper.toDTO(obj));
+    }
+
+    @GetMapping("/buscar-por-tipo")
+    @PermitRoles({"ADMIN", "USER", "PROV"})
+    public ResponseEntity<CarritoItemDTO> findByTipo(
+            @RequestParam Long carritoId,
+            @RequestParam Long referenciaId,
+            @RequestParam String tipo
+    ) {
+        Optional<CarritoItem> car = carritoItemService.findByCarritoIdAndReferenciaIdAndTipo(carritoId,tipo,referenciaId);
+        CarritoItemDTO dto = carritoItemMapper.toDTO(car.get());
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/buscar-por-carrito")
+    @PermitRoles({"ADMIN", "USER", "PROV"})
+    public ResponseEntity<List<CarritoItemDTO>> findByCarrito(
+            @RequestParam Long carritoId
+    ) {
+        List<CarritoItem> lista = carritoItemService.findByCarrito(carritoId);
+        List<CarritoItemDTO> dtos = carritoItemMapper.toDTOs(lista);
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping

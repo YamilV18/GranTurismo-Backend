@@ -6,6 +6,7 @@ import org.example.granturismo.dtos.CarritoDTO;
 import org.example.granturismo.mappers.CarritoMapper;
 import org.example.granturismo.modelo.Carrito;
 
+import org.example.granturismo.modelo.Favorito;
 import org.example.granturismo.modelo.Usuario;
 import org.example.granturismo.repositorio.*;
 import org.example.granturismo.servicio.ICarritoService;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -61,6 +64,11 @@ public class CarritoServiceImp extends CrudGenericoServiceImp<Carrito, Long> imp
 
         Carrito carritoActualizado = repo.save(carritox);
         return carritoMapper.toDTO(carritoActualizado);
+    }
+
+    @Override
+    public Optional<Carrito> findByUsuario(Long usuarioId) {
+        return Optional.ofNullable(repo.findByUsuario_IdUsuario(usuarioId).orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado")));
     }
 
     public Page<Carrito> listaPage(Pageable pageable){

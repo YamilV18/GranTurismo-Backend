@@ -6,6 +6,7 @@ import org.example.granturismo.dtos.ServicioAlimentacionDTO;
 import org.example.granturismo.dtos.ServicioArtesaniaDTO;
 import org.example.granturismo.mappers.ServicioAlimentacionMapper;
 import org.example.granturismo.mappers.ServicioArtesaniaMapper;
+import org.example.granturismo.modelo.CarritoItem;
 import org.example.granturismo.modelo.Servicio;
 import org.example.granturismo.modelo.ServicioAlimentacion;
 import org.example.granturismo.modelo.ServicioArtesania;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -68,6 +70,11 @@ public class ServicioAlimentacionServiceImp extends CrudGenericoServiceImp<Servi
 
         ServicioAlimentacion servicioAlimentacionGuardado = repo.save(servicioAlimentacionActualizado);
         return servicioAlimentacionMapper.toDTO(servicioAlimentacionGuardado);
+    }
+
+    @Override
+    public ServicioAlimentacion findByServicio(Long servicioId) {
+        return repo.findServicioAlimentacionByServicio_IdServicio(servicioId);
     }
 
     public Page<ServicioAlimentacion> listaPage(Pageable pageable){

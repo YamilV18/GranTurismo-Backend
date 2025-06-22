@@ -11,5 +11,7 @@ public interface IServicioAlimentacionService extends ICrudGenericoService<Servi
 
     ServicioAlimentacionDTO updateD(ServicioAlimentacionDTO.ServicioAlimentacionCADTO dto, Long id);
 
+    ServicioAlimentacion findByServicio(Long id);
+
     Page<ServicioAlimentacion> listaPage(Pageable pageable);
 }

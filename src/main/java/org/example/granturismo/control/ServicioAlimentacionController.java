@@ -2,10 +2,12 @@ package org.example.granturismo.control;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.granturismo.dtos.CarritoDTO;
 import org.example.granturismo.dtos.ServicioAlimentacionDTO;
 import org.example.granturismo.dtos.ServicioArtesaniaDTO;
 import org.example.granturismo.mappers.ServicioAlimentacionMapper;
 import org.example.granturismo.mappers.ServicioArtesaniaMapper;
+import org.example.granturismo.modelo.Carrito;
 import org.example.granturismo.modelo.ServicioAlimentacion;
 import org.example.granturismo.modelo.ServicioArtesania;
 import org.example.granturismo.security.PermitRoles;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,7 +43,18 @@ public class ServicioAlimentacionController {
         ServicioAlimentacion obj = servicioAlimentacionService.findById(id);
         return ResponseEntity.ok(servicioAlimentacionMapper.toDTO(obj));
     }
-
+    @GetMapping("/servicio/{id}")
+    @PermitRoles({"ADMIN", "USER", "PROV"})
+    public ResponseEntity<ServicioAlimentacionDTO> findByServicio(
+            @PathVariable("id") Long servicioId
+    ) {
+        ServicioAlimentacion ali = servicioAlimentacionService.findByServicio(servicioId);
+        if (ali == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ServicioAlimentacionDTO dto = servicioAlimentacionMapper.toDTO(ali);
+        return ResponseEntity.ok(dto);
+    }
 
     @PostMapping
     @PermitRoles({"ADMIN"})

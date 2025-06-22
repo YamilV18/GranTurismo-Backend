@@ -6,10 +6,7 @@ import org.example.granturismo.dtos.ServicioDTO;
 import org.example.granturismo.dtos.ServicioHoteleriaDTO;
 import org.example.granturismo.mappers.ServicioHoteleriaMapper;
 import org.example.granturismo.mappers.ServicioMapper;
-import org.example.granturismo.modelo.Destino;
-import org.example.granturismo.modelo.Proveedor;
-import org.example.granturismo.modelo.Servicio;
-import org.example.granturismo.modelo.ServicioHoteleria;
+import org.example.granturismo.modelo.*;
 import org.example.granturismo.repositorio.ICrudGenericoRepository;
 import org.example.granturismo.repositorio.IProveedorRepository;
 import org.example.granturismo.repositorio.IServicioHoteleriaRepository;
@@ -68,6 +65,11 @@ public class ServicioHoteleriaServiceImp extends CrudGenericoServiceImp<Servicio
 
         ServicioHoteleria servicioHoteleriaGuardado = repo.save(servicioHoteleriaActualizado);
         return servicioHoteleriaMapper.toDTO(servicioHoteleriaGuardado);
+    }
+
+    @Override
+    public ServicioHoteleria findByServicio(Long servicioId) {
+        return repo.findServicioHoteleriaByServicio_IdServicio(servicioId);
     }
 
     public Page<ServicioHoteleria> listaPage(Pageable pageable){
