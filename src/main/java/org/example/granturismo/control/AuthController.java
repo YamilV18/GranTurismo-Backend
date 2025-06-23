@@ -13,6 +13,7 @@ import org.example.granturismo.repositorio.VerificationTokenRepository;
 import org.example.granturismo.security.JwtTokenUtil;
 import org.example.granturismo.security.JwtUserDetailsService;
 import org.example.granturismo.security.PermitRoles;
+import org.example.granturismo.servicio.IUsuarioRolService;
 import org.example.granturismo.servicio.IUsuarioService;
 import org.example.granturismo.servicio.impl.EmailServiceImpl;
 import org.example.granturismo.servicio.impl.VerificationTokenServiceImpl;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/users")
 public class AuthController {
     private final IUsuarioService userService;
+    private final IUsuarioRolService userRoleService;
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService jwtUserDetailsService;
     private final VerificationTokenServiceImpl tokenService;
@@ -42,9 +44,10 @@ public class AuthController {
         UsuarioDTO userDto = userService.login(credentialsDto);
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(credentialsDto.email());
         String token = jwtTokenUtil.generateToken(userDetails);
+        String role = userRoleService.findOneByUsuarioUser(userDto.getEmail()).get(0).getRol().getNombre().toString();
         request.getSession().setAttribute("USER_SESSION", userDto.getEmail());
 
-        UsuarioLoginRespuestaDTO respuesta = new UsuarioLoginRespuestaDTO(userDto.getIdUsuario(), userDto.getEmail(), token);
+        UsuarioLoginRespuestaDTO respuesta = new UsuarioLoginRespuestaDTO(userDto.getIdUsuario(), userDto.getEmail(), role, token);
         return ResponseEntity.ok(respuesta);
     }
 
